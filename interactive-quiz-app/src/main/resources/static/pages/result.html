@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Результати тесту</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+
+        #result-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #4285f4;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="result-container">
+        <h1>Ваш результат</h1>
+        <div id="stats">
+            <!-- Сюди динамічно помістимо статистику -->
+        </div>
+        <button id="to-quiz-list">🔙 Назад до списку тестів</button>
+    </div>
+
+    <script>
+        (function () {
+            // 1) Прочитаємо результат з localStorage
+            const raw = localStorage.getItem("lastResult");
+            const statsDiv = document.getElementById("stats");
+
+            if (!raw) {
+                // Якщо localStorage не містить key="lastResult"
+                statsDiv.innerHTML = "<p>Немає даних про пройдений тест.</p>";
+                return;
+            }
+
+            // 2) Розпарсимо обʼєкт
+            let result;
+            try {
+                result = JSON.parse(raw);
+            } catch (e) {
+                statsDiv.innerHTML = "<p>Помилка обробки даних результату.</p>";
+                console.error("Error parsing lastResult:", e);
+                return;
+            }
+
+            // 3) Відобразимо фінальну статистику
+            statsDiv.innerHTML = `
+        <p class="stat">🔢 ID тесту: <strong>${result.testId}</strong></p>
+        <p class="stat">✅ Правильних: <strong>${result.correct}</strong> з ${result.total}</p>
+        <p class="stat">❌ Неправильних: <strong>${result.incorrect}</strong></p>
+        <p class="stat">🏆 Загальний бал: <strong>${result.score}</strong> / ${result.total}</p>
+      `;
+
+            // 4) Виконаємо POST /api/results, щоб зберегти результат у базі
+            fetch("http://localhost:8080/api/results", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(result)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Не вдалося зберегти результат на сервері");
+                    }
+                    console.log("Результат успішно збережено на сервері.");
+                    // За бажанням, після успішного збереження можна прибрати дані, щоби при оновленні сторінки не дублювати:
+                    // localStorage.removeItem("lastResult");
+                })
+                .catch(error => {
+                    console.error("Помилка при надсиланні результату:", error);
+                });
+
+            // 5) Кнопка «Назад до списку тестів»
+            document.getElementById("to-quiz-list").addEventListener("click", function () {
+                window.location.href = "/pages/quiz.html";
+            });
+        })();
+    </script>
+</body>
+
+</html>

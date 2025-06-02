@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Інтерактивні тести</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <h1>Ласкаво просимо!</h1>
+    <a href="pages/admin.html">[Admin] Створити тест</a><br>
+    <a href="pages/quiz.html">[User] Пройти тест</a>
+</body>
+<title>Управління тестами</title>
+<style>
+    body {
+        font-family: sans-serif;
+        padding: 20px;
+    }
+
+    .test {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    input,
+    textarea {
+        display: block;
+        margin: 5px 0;
+        width: 100%;
+    }
+
+    button {
+        margin-top: 5px;
+    }
+</style>
+</head>
+
+<body>
+    <h1>Список тестів</h1>
+    <div id="testList"></div>
+    <script>
+        async function fetchTests() {
+            const res = await fetch("http://localhost:8080/api/tests",)
+            const tests = await res.json();
+            renderTests(tests);
+        }
+
+        function renderTests(tests) {
+            const container = document.getElementById("testList");
+            container.innerHTML = "";
+
+            tests.forEach(test => {
+                const div = document.createElement("div");
+                div.className = "test";
+                div.innerHTML = `
+          <input type="text" id="title-${test.id}" value="${test.title}" />
+          <textarea id="desc-${test.id}">${test.description}</textarea>
+          <button onclick="updateTest(${test.id})">💾 Зберегти</button>
+          <button onclick="deleteTest(${test.id})">🗑️ Видалити</button>
+        `;
+                container.appendChild(div);
+            });
+        }
+
+        async function updateTest(id) {
+            const title = document.getElementById(`title-${id}`).value;
+            const description = document.getElementById(`desc-${id}`).value;
+
+            const res = await fetch(`http://localhost:8080/api/tests/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic " + btoa("admin:admin123")
+                },
+                body: JSON.stringify({ title, description })
+            });
+
+            if (res.ok) {
+                alert("✅ Збережено");
+            } else {
+                alert("❌ Помилка збереження");
+            }
+        }
+
+        async function deleteTest(id) {
+            const confirmDelete = confirm("Ви дійсно хочете видалити тест?");
+            if (!confirmDelete) return;
+
+            const res = await fetch(`http://localhost:8080/api/tests/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Basic " + btoa("admin:admin123")
+                }
+            });
+
+            if (res.ok) {
+                alert("🗑️ Видалено");
+                fetchTests();
+            } else {
+                alert("❌ Помилка видалення");
+            }
+        }
+
+        fetchTests();
+    </script>
+</body>
+
+</html>
