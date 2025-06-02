@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Пройти тест</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        #quiz-container button {
+            display: block;
+            margin: 5px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="goHome()">🏠 На головну</button>
+
+    <h1>Список тестів</h1>
+    <select id="testSelect"></select>
+    <button onclick="startTest()">▶️ Почати тест</button>
+
+    <!-- Підключення логіки з зовнішнього JS -->
+    <script src="/js/quiz.js"></script>
+
+</body>
+
+</html>

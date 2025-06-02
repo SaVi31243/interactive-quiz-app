@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Управління тестами</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .test {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        input,
+        textarea,
+        select {
+            display: block;
+            margin: 5px 0;
+            width: 100%;
+            padding: 8px;
+        }
+
+        button {
+            margin-top: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="goHome()" style="margin-bottom: 20px;">🏠 На головну</button>
+    <h1>Панель адміністратора</h1>
+    <button onclick="window.location.href='create-test.html'">➕ Створити тест</button>
+    <button onclick="window.location.href='user-results.html'">📊 Переглянути результати</button>
+
+    <h2>Список тестів</h2>
+    <div id="testList"></div>
+
+    <script>
+        function goHome() {
+            window.location.href = "/index.html";
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

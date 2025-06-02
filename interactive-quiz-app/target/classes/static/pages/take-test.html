@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Проходження тесту</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        #quiz-container button {
+            display: block;
+            margin: 5px 0;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="goHome()">🏠 На головну</button>
+    <h1>Проходження тесту</h1>
+    <div id="quiz-container">Завантаження питань...</div>
+
+    <script>
+        function goHome() {
+            window.location.href = "/index.html";
+        }
+    </script>
+
+
+    <script src="/js/take-test.js"></script>
+</body>
+
+</html>

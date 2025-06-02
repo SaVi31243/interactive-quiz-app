@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Результати користувачів</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="goHome()" style="margin-bottom: 20px;">🏠 На головну</button>
+    <script>
+        function goHome() {
+            window.location.href = "/index.html";
+        }
+    </script>
+    <h1>Результати користувачів</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Користувач</th>
+                <th>Назва тесту</th>
+                <th>Результат</th>
+            </tr>
+        </thead>
+        <tbody id="resultsTable"></tbody>
+    </table>
+
+    <script>
+        async function loadResults() {
+            const res = await fetch("http://localhost:8080/api/results");
+            const results = await res.json();
+            const table = document.getElementById("resultsTable");
+            table.innerHTML = results.map(r => `
+                <tr>
+                    <td>${r.username || "Анонім"}</td>
+                    <td>${r.testTitle}</td>
+                    <td>${r.correct} / ${r.total}</td>
+                </tr>
+            `).join('');
+        }
+        loadResults();
+    </script>
+</body>
+
+</html>
